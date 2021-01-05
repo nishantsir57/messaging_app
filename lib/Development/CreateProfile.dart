@@ -4,19 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateProfile
 {
-  Future<String> createProfile(String name, String email, String password) async
+  Future<void> createProfile(String name, String email) async
   {
-    FirebaseFirestore firestore=FirebaseFirestore.instance;
-    HashMap<String, Object> map=new HashMap();
-    map['name']=name;
-    map['email']=email;
-    map['password']=password;
-    try{
-      firestore.collection("users").doc(email).setData(map);
-    }catch(e)
-    {
-      return e;
-    }
-    return "success";
+    CollectionReference users=FirebaseFirestore.instance.collection("users");
+    return users.add(
+      {
+        'name' :name,
+        'email' : email
+      }
+    ).then((value) => "success")
+        .catchError((error) => "Some Error Occured, Please Try Again");
   }
 }
